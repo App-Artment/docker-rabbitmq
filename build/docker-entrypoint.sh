@@ -11,6 +11,14 @@ if [ "$(hostname)" != "$(hostname -s)" ]; then
 	export RABBITMQ_USE_LONGNAME=true
 fi
 
+if [ "$RABBITMQ_HOSTNAME" ]; then
+    grep "$RABBITMQ_HOSTNAME 127.0.0.1" /etc/hosts
+    if [ $? != 0 ]; then
+       echo "$RABBITMQ_HOSTNAME 127.0.0.1" >> /etc/hosts
+    fi
+
+fi
+
 if [ "$RABBITMQ_ERLANG_COOKIE" ]; then
 	cookieFile='/var/lib/rabbitmq/.erlang.cookie'
 	if [ -e "$cookieFile" ]; then
@@ -50,7 +58,7 @@ if [ "$1" = 'rabbitmq-server' ]; then
 			  {rabbit,
 			    [
 		EOH
-		
+
 		if [ "$ssl" ]; then
 			cat >> /etc/rabbitmq/rabbitmq.config <<-EOS
 			      { tcp_listeners, [ ] },
@@ -68,7 +76,7 @@ if [ "$1" = 'rabbitmq-server' ]; then
 			      { ssl_listeners, [ ] },
 			EOS
 		fi
-		
+
 		for conf in "${configs[@]}"; do
 			var="RABBITMQ_${conf^^}"
 			val="${!var}"
