@@ -12,11 +12,9 @@ if [ "$(hostname)" != "$(hostname -s)" ]; then
 fi
 
 if [ "$RABBITMQ_HOSTNAME" ]; then
-    grep "$RABBITMQ_HOSTNAME 127.0.0.1" /etc/hosts
-    if [ $? != 0 ]; then
-       echo "$RABBITMQ_HOSTNAME 127.0.0.1" >> /etc/hosts
+    if ! grep -Fxq "127.0.0.1 $RABBITMQ_HOSTNAME" /etc/hosts ; then
+        echo "127.0.0.1 $RABBITMQ_HOSTNAME" >> /etc/hosts
     fi
-
 fi
 
 if [ "$RABBITMQ_ERLANG_COOKIE" ]; then
