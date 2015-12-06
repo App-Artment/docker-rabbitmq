@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+# {cluster_nodes, {['rabbit@rabbitmq-1', 'rabbit@rabbitmq-2'],disc}},
 
 ssl=
 if [ "$RABBITMQ_SSL_CERT_FILE" -a "$RABBITMQ_SSL_KEY_FILE" -a "$RABBITMQ_SSL_CA_FILE" ]; then
@@ -35,7 +36,7 @@ fi
 if [ "$1" = 'rabbitmq-server' ]; then
 	configs=(
 		# https://www.rabbitmq.com/configure.html
-		default_vhost
+	        default_vhost
 		default_user
 		default_pass
 	)
@@ -83,6 +84,12 @@ if [ "$1" = 'rabbitmq-server' ]; then
 			      {$conf, <<"$val">>},
 			EOC
 		done
+                if [ "$RABBITMQ_CLUSTER_NODES" ]; then
+                    cat >> /etc/rabbitmq/rabbitmq.config <<-EOC
+                              {cluster_nodes, $RABBITMQ_CLUSTER_NODES},
+                    EOC
+                fi
+
 		cat >> /etc/rabbitmq/rabbitmq.config <<-'EOF'
 			      {loopback_users, []}
 		EOF
