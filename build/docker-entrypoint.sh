@@ -41,7 +41,7 @@ if [ "$1" = 'rabbitmq-server' ]; then
 		default_pass
 	)
 
-	haveConfig=
+	haveConfig=1
 	for conf in "${configs[@]}"; do
 		var="RABBITMQ_${conf^^}"
 		val="${!var}"
@@ -83,11 +83,11 @@ if [ "$1" = 'rabbitmq-server' ]; then
 			cat >> /etc/rabbitmq/rabbitmq.config <<-EOC
 			      {$conf, <<"$val">>},
 			EOC
-		done
+	        done
                 if [ "$RABBITMQ_CLUSTER_NODES" ]; then
-                    cat >> /etc/rabbitmq/rabbitmq.config <<-EOC
+                    cat >> /etc/rabbitmq/rabbitmq.config <<-EOD
                               {cluster_nodes, $RABBITMQ_CLUSTER_NODES},
-                    EOC
+			EOD
                 fi
 
 		cat >> /etc/rabbitmq/rabbitmq.config <<-'EOF'
