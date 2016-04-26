@@ -1,4 +1,4 @@
-FROM rabbitmq
+FROM rabbitmq:3.6
 
 COPY docker-entrypoint.sh /
 RUN rabbitmq-plugins enable --offline rabbitmq_management
